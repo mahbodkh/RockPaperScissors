@@ -21,7 +21,12 @@ class GameInterface:
     def display_results(self, user_move, computer_move, result):
         print(f"Your move: {user_move}")
         print(f"Computer's move: {computer_move}")
-        print(f"Result: {result}")
+        if result == "user":
+            print("You win!")
+        elif result == "computer":
+            print("Computer wins!")
+        else:
+            print("It's a draw!")
 
 
 
@@ -54,16 +59,17 @@ class RuleEngine:
     def __init__(self, moves):
         self.moves = moves
 
-    def get_winner(self, move1, move2):
+    def get_winner(self, user_move, computer_move):
         # Determine the winner logic
-        if move1 == move2:
+        if user_move == computer_move:
             return "Draw"
         half = len(self.moves) // 2
-        move1_index = self.moves.index(move1)
-        if move2 in self.moves[move1_index + 1:move1_index + 1 + half]:
-            return move1
+        user_move_index = self.moves.index(user_move)
+
+        if computer_move in self.moves[user_move_index + 1:user_move_index + 1 + half]:
+            return "user"
         else:
-            return move2
+            return "computer"
 
 
 
@@ -87,6 +93,9 @@ class GameDriver:
 
         result = self.rule_engine.get_winner(computer_move, user_move)
         self.interface.display_results(user_move, computer_move, result)
+
+        # Display the key after showing the result
+        print(f"HMAC key: {key.hex()}")
 
 if __name__ == "__main__":
     moves = sys.argv[1:]
